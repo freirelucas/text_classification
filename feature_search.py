@@ -2,10 +2,7 @@ from __future__ import print_function
 ##############################################
 # Section 0 - Load packages
 # Sectio 1  - Data acquisition and cleaning
-# Section 2 - Featur extraction - Find the best transformation in SVM
-# Section 3 - Get the best transformation and tune a family of classifiers
-# Section 4 - Analyse Explainability with LIME and Eli5
-# Section 5 - Analyse performance improvement after human-treatment of Lime output
+# Section 2 - Feature extraction - Find the best transformation in SVM
 
 ### Begin Section 0 ###
 
@@ -69,6 +66,8 @@ n_samp = int(len(not_evidence_source)/20)
 
 not_evidence =[]
 not_evidence_source_s = random.sample(not_evidence_source, n_samp )
+
+
 pd.DataFrame(not_evidence_source_s).to_csv("dados")
 
 for i in not_evidence_source_s:
@@ -81,7 +80,6 @@ len(not_evidence)
 data = pd.DataFrame(evidence)
 data["Evidência"] = 1
 data = pd.concat([pd.DataFrame(evidence_source),data], axis = 1)
-
 
 
 data.columns = [ "Arquivo de origem", "Texto","Evidência"]
@@ -159,23 +157,9 @@ logging.basicConfig(level=logging.INFO,
 
 
 # #############################################################################
-# Load some categories from the training set
-#categories = [     'alt.atheism',     'talk.religion.misc',]
-# Uncomment the following to do the analysis on all the categories
-#categories = None
-
-#print("Loading 20 newsgroups dataset for categories:")
-#print(categories)
-#data = fetch_20newsgroups(subset='train', categories=categories)
-
-#type(data)
-#print("%d documents" % len(data.filenames))
-#print("%d categories" % len(data.target_names))
-#print()
-
-# #############################################################################
 # Define a pipeline combining a text feature extractor with a simple
 # classifier
+
 pipeline = Pipeline([
     ('vect', CountVectorizer()),
     ('tfidf', TfidfTransformer()),
@@ -186,16 +170,13 @@ pipeline = Pipeline([
 # increase processing time in a combinatorial way
 parameters = {
     'vect__max_df': (0.5, 0.75, 1.0),
-    'vect__ngram_range': ((1, 1), (1, 2), (1,3), (1,4)),  # unigrams or bigrams
+    'vect__ngram_range': ((1, 1), (1, 2), (1,3), (1,4)),  # unigrams
     'tfidf__use_idf': (True, False),
     'tfidf__norm': ('l1', 'l2'),
     'clf__alpha': (0.00001, 0.000001),
     'clf__penalty': ('l2', 'elasticnet'),
-    'clf__max_iter': (10, 50, 80),
+    'clf__max_iter': (10, 50, 150), # from 80 to 150 due convergence problems
 }
-
-
-
 
 
 grid_search = GridSearchCV(pipeline, parameters, cv=5,
@@ -240,7 +221,7 @@ plt.savefig("Best_without_Stop_Words", dpi=None, facecolor='w', edgecolor='w',
 
 print(grid_search.best_params_)
 
-###### Comparing with stop stop_words
+###### Comparing with Portuguese stop_words
 
 vectorizer_stop = TfidfVectorizer(grid_search.best_params_, stop_words= nltk.corpus.stopwords.words('portuguese'))
 V_stop = vectorizer.fit_transform(X)
@@ -260,7 +241,7 @@ best_penalty = grid_search.best_params_[ 'clf__penalty']
 best_max_iter = grid_search.best_params_[ 'clf__max_iter']
 
 clf = SGDClassifier(alpha = best_alpha, penalty = best_penalty, max_iter = best_max_iter)
-target_names = ["Evidência", "Irrelevante"]
+target_names = [ "Irrelevante", "Evidência"]
 
 print ("Performance sem stop-words")
 clf.fit(V, y)
