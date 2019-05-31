@@ -349,8 +349,8 @@ def benchmark(clf):
     test_time = time() - t0
     print("test time:  %0.3fs" % test_time)
 
-    score = metrics.accuracy_score(y_test, pred)
-    print("accuracy:   %0.3f" % score)
+    score = metrics.recall_score(y_test, pred)
+    print("Recall:   %0.3f" % score)
 
     if hasattr(clf, 'coef_'):
         print("dimensionality: %d" % clf.coef_.shape[1])
