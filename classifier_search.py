@@ -453,3 +453,8 @@ for i, c in zip(indices, clf_names):
     plt.text(-.3, i, c)
 
 plt.show()
+
+plt.savefig("Performance from different classifiers", dpi=None, facecolor='w', edgecolor='w',
+        orientation='portrait', papertype=None, format=None,
+        transparent=False, bbox_inches=None, pad_inches=0.1,
+        frameon=None, metadata=None)
