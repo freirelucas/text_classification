@@ -288,7 +288,7 @@ if opts.use_hashing:
                                    )
     X_train = vectorizer.transform(data_train.data)
 else:
-    vectorizer = TfidfVectorizer(sublinear_tf=True, max_df=0.5,
+    vectorizer = CountVectorizer(max_df=1.0,ngram_range=(1,1),
                              stop_words=pt_stop_words)
     X_train = vectorizer.fit_transform(data_train.data)
 duration = time() - t0
