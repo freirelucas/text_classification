@@ -6,7 +6,7 @@ Done:
     SGD classifier fixed (logistic aproximation of probability - > just used the log loss with kernel aproximation)
     Export also responsive explanation (not only submodular_pick)
     Upweight the most important words (as pipe to LIME)
-    Predict 20 most likely docs (done) and explain it
+    Predict 20 most likely docs and explain it
 
 To do:
 
