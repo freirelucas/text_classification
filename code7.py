@@ -9,8 +9,6 @@ Done:
     Predict 20 most likely docs and explain it
 
 To do:
-
-
     LDA / top 20 words each topic - DBSCAN to discard labeled as irrelevant groups
     Canonical logging
 
